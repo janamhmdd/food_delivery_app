@@ -1,0 +1,1 @@
+This Android folder is intentionally minimal. Run `flutter create .` from the project root if your installed Flutter SDK reports missing generated Android wrapper files. This does not remove the Dart architecture or Firebase integration.
