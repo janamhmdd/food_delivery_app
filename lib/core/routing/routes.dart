@@ -5,5 +5,6 @@ class Routes {
   static const String setPassword = '/setPassword';
   static const String setFingerprint = '/setFingerprint';
   static const String profile = '/profile';
+  static const String filter = '/filter';
   static const String home = '/home';
 }

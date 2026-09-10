@@ -6,6 +6,8 @@ import '../../features/auth/ui/signup_screen.dart';
 import '../../features/auth/ui/set_password_screen.dart';
 import '../../features/auth/ui/set_fingerprint_screen.dart';
 import '../../features/auth/ui/profile_screen.dart';
+import '../../features/auth/ui/filter_screen.dart';
+import '../../features/auth/ui/home_screen.dart';
 
 class AppRouter {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
@@ -29,42 +31,11 @@ class AppRouter {
       case Routes.profile:
         return MaterialPageRoute(builder: (_) => const ProfileScreen());
 
+      case Routes.filter:
+        return MaterialPageRoute(builder: (_) => const FilterScreen());
+
       case Routes.home:
-        return MaterialPageRoute(
-          builder: (_) => Scaffold(
-            appBar: AppBar(
-              title: const Text('Food Delivery'),
-              actions: [
-                Builder(
-                  builder: (context) => IconButton(
-                    icon: const Icon(Icons.person_outline),
-                    tooltip: 'Profile',
-                    onPressed: () => Navigator.pushNamed(context, Routes.profile),
-                  ),
-                ),
-              ],
-            ),
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.restaurant, size: 64, color: Colors.orange),
-                  const SizedBox(height: 16),
-                  const Text('Home Screen - Coming Soon', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 16),
-                  Builder(
-                    builder: (context) => ElevatedButton.icon(
-                      onPressed: () => Navigator.pushNamed(context, Routes.profile),
-                      icon: const Icon(Icons.person),
-                      label: const Text('Open Profile'),
-                      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFE95322), foregroundColor: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
+        return MaterialPageRoute(builder: (_) => const HomeScreen());
 
       default:
         return MaterialPageRoute(
