@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'routes.dart';
 import '../../features/auth/ui/splash_screen.dart';
+import '../../features/auth/ui/welcome_screen.dart';
+import '../../features/auth/ui/onboarding_screen.dart';
 import '../../features/auth/ui/login_screen.dart';
 import '../../features/auth/ui/signup_screen.dart';
 import '../../features/auth/ui/set_password_screen.dart';
@@ -14,6 +16,12 @@ class AppRouter {
     switch (settings.name) {
       case Routes.splash:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
+
+      case Routes.onboarding:
+        return MaterialPageRoute(builder: (_) => const OnboardingScreen());
+
+      case Routes.welcome:
+        return MaterialPageRoute(builder: (_) => const WelcomeScreen());
 
       case Routes.loginScreen:
         return MaterialPageRoute(builder: (_) => const LoginScreen());

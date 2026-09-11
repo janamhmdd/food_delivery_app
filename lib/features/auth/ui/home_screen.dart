@@ -10,6 +10,8 @@ import '../domain/entities/menu_item.dart';
 import '../logic/filter_categories.dart';
 import '../logic/home_cubit.dart';
 import '../logic/home_state.dart';
+import 'category_items_screen.dart';
+import 'notifications_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -66,7 +68,15 @@ class _HomeView extends StatelessWidget {
                               children: [
                                 _CategoryRow(
                                   selected: state.selectedCategory,
-                                  onSelect: context.read<HomeCubit>().selectCategory,
+                                  onSelect: (cat) {
+                                    context.read<HomeCubit>().selectCategory(cat);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => CategoryItemsScreen(category: cat),
+                                      ),
+                                    );
+                                  },
                                 ),
                                 const SizedBox(height: 20),
                                 _SectionHeader(
@@ -143,7 +153,13 @@ class _HeaderSection extends StatelessWidget {
               const SizedBox(width: 10),
               _HeaderCircleIcon(icon: Icons.shopping_cart_outlined, onTap: () {}),
               const SizedBox(width: 8),
-              _HeaderCircleIcon(icon: Icons.notifications_none, onTap: () {}),
+              _HeaderCircleIcon(
+                icon: Icons.notifications_none,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+                ),
+              ),
               const SizedBox(width: 8),
               _HeaderCircleIcon(
                 icon: Icons.person_outline,
@@ -327,30 +343,39 @@ class _PromoBanner extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.primary,
         borderRadius: BorderRadius.circular(16),
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Row(
+      ),clipBehavior: Clip.antiAlias,
+      child: Stack(
         children: [
-          Expanded(
+          SizedBox(
+            width: double.infinity,
+            height:120,
+            child: Image.asset(
+              'assets/images/Promo.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   'Experience our delicious new dish',
-                  style: AppTextStyles.body.copyWith(color: Colors.white),
+                  style: AppTextStyles.body.copyWith(
+                    color: Colors.white,
+                  ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   '30% OFF',
-                  style: AppTextStyles.headerTitle.copyWith(color: Colors.white, fontSize: 22),
+                  style: AppTextStyles.headerTitle.copyWith(
+                    color: Colors.white,
+                    fontSize: 22,
+                  ),
                 ),
               ],
             ),
-          ),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Icon(Icons.local_pizza, color: Colors.white.withValues(alpha: 0.85), size: 64),
           ),
         ],
       ),
@@ -386,7 +411,7 @@ class _RecommendRow extends StatelessWidget {
                           CachedNetworkImage(
                             imageUrl: item.imageUrl,
                             fit: BoxFit.cover,
-                            placeholder: (_,_) => Container(color: AppColors.peachCircle),
+                            placeholder: (_, __) => Container(color: AppColors.peachCircle),
                             errorWidget: (_, __, ___) => Container(
                               color: AppColors.peachCircle,
                               child: Icon(Icons.fastfood, color: AppColors.primary),

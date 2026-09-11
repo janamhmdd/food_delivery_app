@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SharedPrefHelper {
   static const String _userCodeKey = 'user_code';
   static const String _userEmailKey = 'user_email';
+  static const String _hasSeenOnboardingKey = 'has_seen_onboarding';
 
   static Future<void> saveUserCode(String userCode) async {
     final prefs = await SharedPreferences.getInstance();
@@ -38,5 +39,15 @@ class SharedPrefHelper {
   static Future<bool> hasUserSession() async {
     final code = await getUserCode();
     return code != null && code.isNotEmpty;
+  }
+
+  static Future<void> setOnboardingSeen() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_hasSeenOnboardingKey, true);
+  }
+
+  static Future<bool> hasSeenOnboarding() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_hasSeenOnboardingKey) ?? false;
   }
 }

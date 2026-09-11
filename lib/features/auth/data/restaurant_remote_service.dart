@@ -5,7 +5,6 @@ class RestaurantRemoteService {
 
   RestaurantRemoteService(this._dio);
 
-
   Future<List<dynamic>> getAllItems() async {
     final response = await _dio.get('/api/Restaurant/items');
     return response.data as List<dynamic>;
@@ -19,5 +18,29 @@ class RestaurantRemoteService {
       },
     );
     return response.data as List<dynamic>;
+  }
+
+  
+  Future<List<dynamic>> getMenu(int restaurantId, {String? sortByPrice}) async {
+    final response = await _dio.get(
+      '/api/Restaurant/$restaurantId/menu',
+      queryParameters: {
+        if (sortByPrice != null) 'sortbyprice': sortByPrice,
+      },
+    );
+    return response.data as List<dynamic>;
+  }
+
+  Future<dynamic> makeOrder({
+    required int restaurantId,
+    required String apiKey,
+    required List<Map<String, dynamic>> menuDTO,
+  }) async {
+    final response = await _dio.post(
+      '/api/Restaurant/$restaurantId/makeorder',
+      queryParameters: {'apikey': apiKey},
+      data: {'menuDTO': menuDTO},
+    );
+    return response.data;
   }
 }
