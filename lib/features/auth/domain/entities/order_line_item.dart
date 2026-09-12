@@ -9,4 +9,10 @@ class OrderLineItem {
         'itemName': itemName,
         'quantity': quantity,
       };
+
+factory OrderLineItem.fromJson(Map<String, dynamic> json) => OrderLineItem(
+      itemName: json['itemName'] as String? ?? '',
+      quantity: json['quantity'] as int? ?? 1,
+    );
 }
+

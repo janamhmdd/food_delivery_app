@@ -12,7 +12,11 @@ import '../logic/home_cubit.dart';
 import '../logic/home_state.dart';
 import 'category_items_screen.dart';
 import 'notifications_screen.dart';
-
+import '../../../core/routing/bottom_nav_handler.dart';
+import 'favorite_heart_button.dart';
+import '../logic/cart_cubit.dart';
+import '../logic/cart_state.dart';
+import 'cart_screen.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -103,7 +107,10 @@ class _HomeView extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: const AppBottomNavBar(selectedIndex: 0),
+      bottomNavigationBar: AppBottomNavBar(
+  selectedIndex: 0,
+  onTap: (index) => handleBottomNavTap(context, index, 0),
+),
     );
   }
 }
@@ -151,8 +158,8 @@ class _HeaderSection extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              _HeaderCircleIcon(icon: Icons.shopping_cart_outlined, onTap: () {}),
-              const SizedBox(width: 8),
+              const _CartIcon(),
+               const SizedBox(width: 8),
               _HeaderCircleIcon(
                 icon: Icons.notifications_none,
                 onTap: () => Navigator.push(
@@ -430,11 +437,11 @@ class _RecommendRow extends StatelessWidget {
                               ),
                             ),
                           ),
-                          const Positioned(
-                            top: 6,
-                            right: 6,
-                            child: _Badge(child: Icon(Icons.favorite_border, size: 14)),
-                          ),
+                          Positioned(
+                             top: 6,
+                             right: 6,
+                             child: FavoriteHeartButton(item: item),
+                              ),
                           Positioned(
                             right: 6,
                             bottom: 6,
@@ -491,6 +498,42 @@ class _ErrorView extends StatelessWidget {
           ElevatedButton(onPressed: onRetry, child: const Text('Retry')),
         ],
       ),
+    );
+  }
+}
+
+class _CartIcon extends StatelessWidget {
+  const _CartIcon();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CartCubit, CartState>(
+      builder: (context, cart) {
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            _HeaderCircleIcon(
+              icon: Icons.shopping_cart_outlined,
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CartScreen())),
+            ),
+            if (cart.itemCount > 0)
+              Positioned(
+                right: -2,
+                top: -2,
+                child: Container(
+                  padding: const EdgeInsets.all(3),
+                  constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                  decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+                  child: Text(
+                    '${cart.itemCount}',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 }

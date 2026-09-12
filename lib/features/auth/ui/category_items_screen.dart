@@ -13,6 +13,8 @@ import '../logic/category_items_cubit.dart';
 import '../logic/category_items_state.dart';
 import '../logic/filter_categories.dart';
 import 'item_details_screen.dart';
+import '../../../core/routing/bottom_nav_handler.dart';
+import 'favorite_heart_button.dart';
 
 /// The API has no rating field on items — this is a stable, deterministic
 /// stand-in (not random) so the same item always shows the same "rating"
@@ -100,7 +102,10 @@ class _CategoryItemsViewState extends State<_CategoryItemsView> {
           ],
         ),
       ),
-      bottomNavigationBar: const AppBottomNavBar(selectedIndex: 1),
+      bottomNavigationBar: AppBottomNavBar(
+        selectedIndex: 1,
+        onTap: (index) => handleBottomNavTap(context, index, 1),
+      ),
     );
   }
 }
@@ -164,22 +169,31 @@ class _ItemRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(14),
-            child: CachedNetworkImage(
-              imageUrl: item.imageUrl,
-              width: 90,
-              height: 90,
-              fit: BoxFit.cover,
-              placeholder: (_, __) => Container(width: 90, height: 90, color: AppColors.peachCircle),
-              errorWidget: (_, __, ___) => Container(
-                width: 90,
-                height: 90,
+          SizedBox(
+           width: 90,
+             height: 90,
+              child: Stack(
+               children: [
+                ClipRRect(
+                borderRadius: BorderRadius.circular(14),
+                 child: CachedNetworkImage(
+                  imageUrl: item.imageUrl,
+                   width: 90,
+                  height: 90,
+                  fit: BoxFit.cover,
+                  placeholder: (_, __) => Container(width: 90, height: 90, color: AppColors.peachCircle),
+                   errorWidget: (_, __, ___) => Container(
+                    width: 90,
+                   height: 90,
                 color: AppColors.peachCircle,
-                child: Icon(Icons.fastfood, color: AppColors.primary),
-              ),
-            ),
+            child: Icon(Icons.fastfood, color: AppColors.primary),
           ),
+        ),
+      ),
+      Positioned(top: 2, right: 2, child: FavoriteHeartButton(item: item, size: 12)),
+    ],
+  ),
+),
           const SizedBox(width: 14),
           Expanded(
             child: Column(

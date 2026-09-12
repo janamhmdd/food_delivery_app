@@ -1,15 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/di/service_locator.dart';
 import '../../../core/themes/app_colors.dart';
 import '../../../core/themes/app_text_styles.dart';
 import '../../../core/widgets/app_button.dart';
 import '../domain/entities/menu_item.dart';
-import '../domain/repositories/restaurant_repository.dart';
 import '../logic/generic_add_ons.dart';
 import '../logic/item_details_cubit.dart';
 import '../logic/item_details_state.dart';
+import '../logic/cart_cubit.dart';
 
 class ItemDetailsScreen extends StatelessWidget {
   final MenuItem item;
@@ -18,8 +17,8 @@ class ItemDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ItemDetailsCubit(getIt<RestaurantRepository>(), item),
-      child: _ItemDetailsView(item: item),
+     create: (_) => ItemDetailsCubit(item),
+     child: _ItemDetailsView(item: item),
     );
   }
 }
@@ -37,22 +36,10 @@ class _ItemDetailsViewState extends State<_ItemDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ItemDetailsCubit, ItemDetailsState>(
-      listener: (context, state) {
-        if (state.orderStatus == OrderStatus.success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Order placed!')),
-          );
-          Navigator.of(context).pop();
-        } else if (state.orderStatus == OrderStatus.error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage ?? 'Something went wrong')),
-          );
-        }
-      },
-      builder: (context, state) {
-        final cubit = context.read<ItemDetailsCubit>();
-        return Scaffold(
+    return BlocBuilder<ItemDetailsCubit, ItemDetailsState>(
+     builder: (context, state) {
+     final cubit = context.read<ItemDetailsCubit>();
+     return Scaffold(
           backgroundColor: AppColors.background,
           body: Column(
             children: [
@@ -125,15 +112,19 @@ class _ItemDetailsViewState extends State<_ItemDetailsView> {
               ),
             ],
           ),
-          bottomNavigationBar: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
-            child: AppButton(
-              text: state.orderStatus == OrderStatus.placing
-                  ? 'Placing order...'
-                  : 'Add to Cart · \$${cubit.displayTotal.toStringAsFixed(2)}',
-              onPressed: state.orderStatus == OrderStatus.placing ? () {} : cubit.placeOrder,
-            ),
-          ),
+        bottomNavigationBar: Padding(
+         padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+         child: AppButton(
+         text: 'Add to Cart · \$${cubit.displayTotal.toStringAsFixed(2)}',
+         onPressed: () {
+          context.read<CartCubit>().addItem(widget.item, quantity: state.quantity);
+         ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Added to cart!')),
+      );
+      Navigator.of(context).pop();
+    },
+  ),
+),
         );
       },
     );

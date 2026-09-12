@@ -37,9 +37,9 @@ class RestaurantRemoteService {
     required List<Map<String, dynamic>> menuDTO,
   }) async {
     final response = await _dio.post(
-      '/api/Restaurant/$restaurantId/makeorder',
-      queryParameters: {'apikey': apiKey},
-      data: {'menuDTO': menuDTO},
+  '/api/Order/$restaurantId/makeorder',
+    queryParameters: {'apikey': apiKey},
+    data: {'menuDTO': menuDTO},
     );
     return response.data;
   }

@@ -9,4 +9,8 @@ class Routes {
   static const String profile = '/profile';
   static const String home = '/home';
   static const String filter = '/filter';
+  static const String favorites = '/favorites';
+  static const String orders = '/orders';
+  static const String help = '/help';
+  static const String cart = '/cart';
 }

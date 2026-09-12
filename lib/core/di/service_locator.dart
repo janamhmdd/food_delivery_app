@@ -9,6 +9,9 @@ import '../../features/auth/data/restaurant_remote_service.dart';
 import '../../features/auth/data/restaurant_repo_impl.dart';
 import '../../features/auth/domain/repositories/restaurant_repository.dart';
 import '../../features/auth/logic/home_cubit.dart';
+import '../../features/auth/logic/favorites_cubit.dart';
+import '../../features/auth/logic/orders_cubit.dart';
+import '../../features/auth/logic/cart_cubit.dart';
 final getIt = GetIt.instance;
 
 void setupGetIt() {
@@ -17,7 +20,9 @@ void setupGetIt() {
   getIt.registerLazySingleton<AuthRemoteService>(
     () => AuthRemoteService(getIt()),
   );
-
+  getIt.registerLazySingleton<CartCubit>(
+  () => CartCubit(getIt<RestaurantRepository>()),
+  );
   getIt.registerLazySingleton<AuthRepository>(
     () => AuthRepoImpl(getIt<AuthRemoteService>()),
   );
@@ -37,4 +42,11 @@ void setupGetIt() {
   getIt.registerFactory<HomeCubit>(
     () => HomeCubit(getIt<RestaurantRepository>()),
   );
+
+  getIt.registerLazySingleton<FavoritesCubit>(
+    () => FavoritesCubit(getIt<RestaurantRepository>()),
+);
+  getIt.registerLazySingleton<OrdersCubit>(
+  () => OrdersCubit(getIt<RestaurantRepository>()),
+);
 }
