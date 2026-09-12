@@ -2,9 +2,8 @@ import '../../../../core/networking/api_result.dart';
 import '../../../../core/networking/safe_api_call.dart';
 import '../domain/entities/menu_item.dart';
 import '../domain/entities/order_line_item.dart';
-import '../domain/entities/restaurant.dart';
+import '../domain/item_category_keywords.dart';
 import '../domain/repositories/restaurant_repository.dart';
-import '../logic/category_keyword_map.dart';
 import 'restaurant_remote_service.dart';
 
 class RestaurantRepoImpl implements RestaurantRepository {
@@ -13,9 +12,9 @@ class RestaurantRepoImpl implements RestaurantRepository {
   RestaurantRepoImpl(this._remoteService);
 
   @override
-  Future<ApiResult<List<MenuItem>>> getAllItems() async {
+  Future<ApiResult<List<MenuItem>>> getAllItems({String? itemName}) async {
     final result = await safeApiCall<List<dynamic>>(() async {
-      return await _remoteService.getAllItems();
+      return await _remoteService.getAllItems(itemName: itemName);
     });
 
     if (result.isSuccess && result.data != null) {
@@ -31,23 +30,13 @@ class RestaurantRepoImpl implements RestaurantRepository {
   @override
   Future<ApiResult<List<MenuItem>>> getItemsByCategory(String category) async {
     final result = await safeApiCall<List<MenuItem>>(() async {
-      // Don't pass `category` here — the API only understands real cuisine
-      // names (e.g. "Biryani"), not our 5 UI buckets, so it would always
-      // return an empty list. Fetch everything and filter client-side.
-      final restaurantJson = await _remoteService.getRestaurants();
-      final restaurants = restaurantJson
-          .map((json) => Restaurant.fromJson(json as Map<String, dynamic>))
-          .where((r) => matchesCategoryKeywords(category, r.type))
+      // Classify by each item's own name/description instead of the
+      // restaurant's cuisine type — see item_category_keywords.dart for why.
+      final itemsJson = await _remoteService.getAllItems();
+      final items = itemsJson.map((json) => MenuItem.fromJson(json as Map<String, dynamic>));
+      return items
+          .where((i) => matchesItemCategoryKeywords(category, i.itemName, i.itemDescription))
           .toList();
-
-      final items = <MenuItem>[];
-      for (final restaurant in restaurants) {
-        final menuJson = await _remoteService.getMenu(restaurant.restaurantId);
-        items.addAll(
-          menuJson.map((json) => MenuItem.fromJson(json as Map<String, dynamic>)),
-        );
-      }
-      return items;
     });
 
     if (result.isSuccess && result.data != null) {

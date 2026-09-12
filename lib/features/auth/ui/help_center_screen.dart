@@ -86,14 +86,15 @@ const List<_ContactChannel> _kContactChannels = [
 ];
 
 class HelpCenterScreen extends StatefulWidget {
-  const HelpCenterScreen({super.key});
+  final int initialTab;
+  const HelpCenterScreen({super.key, this.initialTab = 0});
 
   @override
   State<HelpCenterScreen> createState() => _HelpCenterScreenState();
 }
 
 class _HelpCenterScreenState extends State<HelpCenterScreen> {
-  int _topTab = 0; // 0 = FAQ, 1 = Contact Us
+  late int _topTab = widget.initialTab; // 0 = FAQ, 1 = Contact Us
   int _category = 0; // 0 General, 1 Account, 2 Services
   String _query = '';
   final Set<String> _expandedFaqs = {};

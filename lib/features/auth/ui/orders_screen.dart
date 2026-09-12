@@ -9,6 +9,7 @@ import '../domain/entities/order_record.dart';
 import '../logic/orders_cubit.dart';
 import '../logic/orders_state.dart';
 import 'cancel_order_screen.dart';
+import 'leave_review_screen.dart';
 import 'live_tracking_screen.dart';
 import 'order_details_screen.dart';
 const _kMonths = [
@@ -22,49 +23,6 @@ String _formatOrderDate(DateTime dt) {
   final minute = dt.minute.toString().padLeft(2, '0');
   return '${dt.day} ${_kMonths[dt.month - 1]}, '
       '${hour12.toString().padLeft(2, '0')}:$minute $period';
-}
-
-void _showReviewDialog(BuildContext context) {
-  int rating = 5;
-  showDialog(
-    context: context,
-    builder: (dialogContext) {
-      return StatefulBuilder(
-        builder: (context, setState) {
-          return AlertDialog(
-            title: const Text('Rate your order'),
-            content: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: List.generate(5, (i) {
-                final filled = i < rating;
-                return IconButton(
-                  icon: Icon(filled ? Icons.star : Icons.star_border, color: AppColors.primary),
-                  onPressed: () => setState(() => rating = i + 1),
-                );
-              }),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(dialogContext).pop(),
-                child: const Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(dialogContext).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Thanks for your feedback!')),
-                  );
-                },
-                child: const Text('Submit'),
-              ),
-            ],
-          );
-        },
-      );
-    },
-  );
-  // Note: there's no review endpoint in the API, so this is cosmetic —
-  // it isn't sent or persisted anywhere.
 }
 
 class OrdersScreen extends StatefulWidget {
@@ -128,7 +86,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           return ListView.separated(
                             padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
                             itemCount: orders.length,
-                            separatorBuilder: (_, __) => const SizedBox(height: 14),
+                            separatorBuilder: (_, _) => const SizedBox(height: 14),
                             itemBuilder: (context, index) => _OrderCard(order: orders[index]),
                           );
                         },
@@ -252,8 +210,8 @@ class _OrderCard extends StatelessWidget {
                   width: 64,
                   height: 64,
                   fit: BoxFit.cover,
-                  placeholder: (_, __) => Container(width: 64, height: 64, color: AppColors.peachCircle),
-                  errorWidget: (_, __, ___) => Container(
+                  placeholder: (_, _) => Container(width: 64, height: 64, color: AppColors.peachCircle),
+                  errorWidget: (_, _, _) => Container(
                     width: 64,
                     height: 64,
                     color: AppColors.peachCircle,
@@ -354,7 +312,10 @@ class _OrderCard extends StatelessWidget {
                   child: _OrderActionButton(
                     label: 'Leave a review',
                     filled: false,
-                    onTap: () => _showReviewDialog(context),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => LeaveReviewScreen(order: order)),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 10),

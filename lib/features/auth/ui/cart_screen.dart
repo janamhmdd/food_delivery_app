@@ -122,7 +122,7 @@ class _CartList extends StatelessWidget {
           child: ListView.separated(
             padding: const EdgeInsets.fromLTRB(20, 4, 20, 4),
             itemCount: state.items.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            separatorBuilder: (_, _) => const SizedBox(height: 12),
             itemBuilder: (context, index) => _CartRow(entry: state.items[index]),
           ),
         ),
@@ -171,8 +171,8 @@ class _CartRow extends StatelessWidget {
               width: 56,
               height: 56,
               fit: BoxFit.cover,
-              placeholder: (_, __) => Container(width: 56, height: 56, color: AppColors.peachCircle),
-              errorWidget: (_, __, ___) => Container(
+              placeholder: (_, _) => Container(width: 56, height: 56, color: AppColors.peachCircle),
+              errorWidget: (_, _, _) => Container(
                 width: 56,
                 height: 56,
                 color: AppColors.peachCircle,

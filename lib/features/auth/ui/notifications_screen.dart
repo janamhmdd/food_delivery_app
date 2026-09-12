@@ -49,7 +49,7 @@ class NotificationsScreen extends StatelessWidget {
               child: ListView.separated(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 itemCount: _notifications.length,
-                separatorBuilder: (_, __) => const Divider(color: Colors.white24, height: 24),
+                separatorBuilder: (_, _) => const Divider(color: Colors.white24, height: 24),
                 itemBuilder: (context, index) {
                   final item = _notifications[index];
                   return Row(

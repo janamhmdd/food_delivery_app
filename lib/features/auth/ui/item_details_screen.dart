@@ -9,6 +9,9 @@ import '../logic/generic_add_ons.dart';
 import '../logic/item_details_cubit.dart';
 import '../logic/item_details_state.dart';
 import '../logic/cart_cubit.dart';
+import '../logic/portion_sizes.dart';
+import '../domain/pseudo_discount.dart';
+
 
 class ItemDetailsScreen extends StatelessWidget {
   final MenuItem item;
@@ -56,27 +59,63 @@ class _ItemDetailsViewState extends State<_ItemDetailsView> {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: CachedNetworkImage(
-                          imageUrl: widget.item.imageUrl,
-                          height: 180,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          placeholder: (_, __) =>
-                              Container(height: 180, color: AppColors.peachCircle),
-                          errorWidget: (_, __, ___) => Container(
-                            height: 180,
-                            color: AppColors.peachCircle,
-                            child: Icon(Icons.fastfood, color: AppColors.primary, size: 40),
-                          ),
+                        child: Stack(
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl: widget.item.imageUrl,
+                              height: 180,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              placeholder: (_, _) =>
+                                  Container(height: 180, color: AppColors.peachCircle),
+                              errorWidget: (_, _, _) => Container(
+                                height: 180,
+                                color: AppColors.peachCircle,
+                                child: Icon(Icons.fastfood, color: AppColors.primary, size: 40),
+                              ),
+                            ),
+                            if (hasPseudoDiscount(widget.item.itemId))
+                              Positioned(
+                                top: 10,
+                                right: 10,
+                                child: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+                                  child: const Text(
+                                    '-30%',
+                                    style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
                       ),
                       const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            '\$${widget.item.itemPrice.toStringAsFixed(2)}',
-                            style: AppTextStyles.heading.copyWith(color: AppColors.primary, fontSize: 22),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                '\$${widget.item.itemPrice.toStringAsFixed(2)}',
+                                style: AppTextStyles.heading.copyWith(color: AppColors.primary, fontSize: 22),
+                              ),
+                              if (hasPseudoDiscount(widget.item.itemId)) ...[
+                                const SizedBox(width: 8),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 3),
+                                  child: Text(
+                                    '\$${(widget.item.itemPrice / 0.7).toStringAsFixed(2)}',
+                                    style: AppTextStyles.body.copyWith(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 13,
+                                      decoration: TextDecoration.lineThrough,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
                           _QuantityStepper(
                             quantity: state.quantity,
@@ -92,6 +131,19 @@ class _ItemDetailsViewState extends State<_ItemDetailsView> {
                             : 'No description available.',
                         style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
                       ),
+                      const SizedBox(height: 20),
+                      Text('Portion size', style: AppTextStyles.heading.copyWith(fontSize: 16)),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Cosmetic — adjusts the total shown here, not sent with your order',
+                        style: AppTextStyles.body.copyWith(color: AppColors.textSecondary, fontSize: 11),
+                      ),
+                      const SizedBox(height: 8),
+                      ...kPortionSizes.map((portion) => _PortionRow(
+                            portion: portion,
+                            isSelected: state.selectedPortion == portion.label,
+                            onTap: () => cubit.selectPortion(portion.label),
+                          )),
                       const SizedBox(height: 20),
                       Text('Add on ingredients', style: AppTextStyles.heading.copyWith(fontSize: 16)),
                       const SizedBox(height: 4),
@@ -219,6 +271,41 @@ class _StepButton extends StatelessWidget {
         radius: 14,
         backgroundColor: AppColors.primary,
         child: Icon(icon, color: Colors.white, size: 16),
+      ),
+    );
+  }
+}
+
+class _PortionRow extends StatelessWidget {
+  final PortionSize portion;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _PortionRow({required this.portion, required this.isSelected, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(portion.label, style: AppTextStyles.body),
+            ),
+            Text(
+              '\$${portion.extraPrice.toStringAsFixed(2)}',
+              style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
+            ),
+            const SizedBox(width: 10),
+            Icon(
+              isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
+              color: AppColors.primary,
+              size: 20,
+            ),
+          ],
+        ),
       ),
     );
   }

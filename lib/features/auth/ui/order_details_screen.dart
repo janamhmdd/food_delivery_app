@@ -103,8 +103,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                 width: 56,
                                 height: 56,
                                 fit: BoxFit.cover,
-                                placeholder: (_, __) => Container(width: 56, height: 56, color: AppColors.peachCircle),
-                                errorWidget: (_, __, ___) => Container(
+                                placeholder: (_, _) => Container(width: 56, height: 56, color: AppColors.peachCircle),
+                                errorWidget: (_, _, _) => Container(
                                   width: 56,
                                   height: 56,
                                   color: AppColors.peachCircle,

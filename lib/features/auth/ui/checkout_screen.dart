@@ -147,8 +147,8 @@ class _CheckoutItemRow extends StatelessWidget {
               width: 52,
               height: 52,
               fit: BoxFit.cover,
-              placeholder: (_, __) => Container(width: 52, height: 52, color: AppColors.peachCircle),
-              errorWidget: (_, __, ___) => Container(
+              placeholder: (_, _) => Container(width: 52, height: 52, color: AppColors.peachCircle),
+              errorWidget: (_, _, _) => Container(
                 width: 52,
                 height: 52,
                 color: AppColors.peachCircle,

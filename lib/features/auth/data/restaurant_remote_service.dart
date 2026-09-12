@@ -5,8 +5,14 @@ class RestaurantRemoteService {
 
   RestaurantRemoteService(this._dio);
 
-  Future<List<dynamic>> getAllItems() async {
-    final response = await _dio.get('/api/Restaurant/items');
+  Future<List<dynamic>> getAllItems({String? itemName, String? sortByPrice}) async {
+    final response = await _dio.get(
+      '/api/Restaurant/items',
+      queryParameters: {
+        if (itemName != null && itemName.isNotEmpty) 'ItemName': itemName,
+        if (sortByPrice != null && sortByPrice.isNotEmpty) 'sortbyprice': sortByPrice,
+      },
+    );
     return response.data as List<dynamic>;
   }
 
@@ -25,7 +31,7 @@ class RestaurantRemoteService {
     final response = await _dio.get(
       '/api/Restaurant/$restaurantId/menu',
       queryParameters: {
-        if (sortByPrice != null) 'sortbyprice': sortByPrice,
+        if (sortByPrice != null && sortByPrice.isNotEmpty) 'sortbyprice': sortByPrice,
       },
     );
     return response.data as List<dynamic>;

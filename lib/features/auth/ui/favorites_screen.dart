@@ -179,8 +179,8 @@ class _FavoriteCard extends StatelessWidget {
                   CachedNetworkImage(
                     imageUrl: item.imageUrl,
                     fit: BoxFit.cover,
-                    placeholder: (_, __) => Container(color: AppColors.peachCircle),
-                    errorWidget: (_, __, ___) => Container(
+                    placeholder: (_, _) => Container(color: AppColors.peachCircle),
+                    errorWidget: (_, _, _) => Container(
                       color: AppColors.peachCircle,
                       child: Icon(Icons.fastfood, color: AppColors.primary),
                     ),

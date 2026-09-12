@@ -151,7 +151,7 @@ class _OnboardingPageView extends StatelessWidget {
             page.imageAsset,
             width: double.infinity,
             fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => Container(
+            errorBuilder: (_, _, _) => Container(
               color: AppColors.peachCircle,
               child: Icon(page.icon, size: 48, color: AppColors.primary),
             ),

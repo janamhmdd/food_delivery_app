@@ -14,6 +14,11 @@ import '../../features/auth/ui/favorites_screen.dart';
 import '../../features/auth/ui/orders_screen.dart';
 import '../../features/auth/ui/help_screen.dart';
 import '../../features/auth/ui/cart_screen.dart';
+import '../../features/auth/ui/my_profile_screen.dart';
+import '../../features/auth/ui/delivery_address_screen.dart';
+import '../../features/auth/ui/payment_methods_screen.dart';
+import '../../features/auth/ui/help_center_screen.dart';
+import '../../features/auth/ui/settings_screen.dart';
 class AppRouter {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -59,7 +64,23 @@ class AppRouter {
    
       case Routes.cart:
         return MaterialPageRoute(builder: (_) => const CartScreen());
-    
+
+      // Now wired to the real screens.
+      case Routes.myProfile:
+        return MaterialPageRoute(builder: (_) => const MyProfileScreen());
+
+      case Routes.deliveryAddress:
+        return MaterialPageRoute(builder: (_) => const DeliveryAddressScreen());
+
+      case Routes.paymentMethods:
+        return MaterialPageRoute(builder: (_) => const PaymentMethodsScreen());
+
+      case Routes.contactUs:
+        return MaterialPageRoute(builder: (_) => const HelpCenterScreen(initialTab: 1));
+
+      case Routes.settings:
+        return MaterialPageRoute(builder: (_) => const SettingsScreen());
+
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(

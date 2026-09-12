@@ -1,0 +1,1 @@
+bool hasPseudoDiscount(int itemId) => itemId % 3 == 0;

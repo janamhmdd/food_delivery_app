@@ -13,4 +13,9 @@ class Routes {
   static const String orders = '/orders';
   static const String help = '/help';
   static const String cart = '/cart';
+  static const String myProfile = '/myProfile';
+  static const String deliveryAddress = '/deliveryAddress';
+  static const String paymentMethods = '/paymentMethods';
+  static const String contactUs = '/contactUs';
+  static const String settings = '/settings';
 }

@@ -13,12 +13,10 @@ import '../logic/category_items_cubit.dart';
 import '../logic/category_items_state.dart';
 import '../logic/filter_categories.dart';
 import 'item_details_screen.dart';
+import 'search_screen.dart';
 import '../../../core/routing/bottom_nav_handler.dart';
 import 'favorite_heart_button.dart';
 
-/// The API has no rating field on items — this is a stable, deterministic
-/// stand-in (not random) so the same item always shows the same "rating"
-/// rather than flickering between rebuilds.
 double _pseudoRating(int itemId) => min(5.0, 3.5 + (itemId % 15) / 10);
 
 class CategoryItemsScreen extends StatelessWidget {
@@ -147,7 +145,7 @@ class _Body extends StatelessWidget {
         return ListView.separated(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
           itemCount: items.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 16),
+          separatorBuilder: (_, _) => const SizedBox(height: 16),
           itemBuilder: (context, index) => _ItemRow(item: items[index]),
         );
     }
@@ -181,8 +179,8 @@ class _ItemRow extends StatelessWidget {
                    width: 90,
                   height: 90,
                   fit: BoxFit.cover,
-                  placeholder: (_, __) => Container(width: 90, height: 90, color: AppColors.peachCircle),
-                   errorWidget: (_, __, ___) => Container(
+                  placeholder: (_, _) => Container(width: 90, height: 90, color: AppColors.peachCircle),
+                   errorWidget: (_, _, _) => Container(
                     width: 90,
                    height: 90,
                 color: AppColors.peachCircle,
@@ -263,7 +261,12 @@ class _Header extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: Container(
+            child: GestureDetector(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const SearchScreen()),
+              ),
+              child: Container(
               height: 40,
               padding: const EdgeInsets.symmetric(horizontal: 14),
               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
@@ -275,6 +278,7 @@ class _Header extends StatelessWidget {
                     child: Text('Search', style: AppTextStyles.hint.copyWith(color: AppColors.textSecondary)),
                   ),
                 ],
+              ),
               ),
             ),
           ),

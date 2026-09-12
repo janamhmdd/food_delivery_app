@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../domain/entities/menu_item.dart';
 import 'generic_add_ons.dart';
 import 'item_details_state.dart';
+import 'portion_sizes.dart';
 
 class ItemDetailsCubit extends Cubit<ItemDetailsState> {
   final MenuItem item;
@@ -25,10 +26,16 @@ class ItemDetailsCubit extends Cubit<ItemDetailsState> {
     emit(state.copyWith(selectedAddOns: updated));
   }
 
-  /// Sum of the base item price and selected add-ons, times quantity.
-  /// Add-ons are cosmetic (see generic_add_ons.dart) — not sent to the API.
+  void selectPortion(String portionLabel) => emit(state.copyWith(selectedPortion: portionLabel));
+
+
   double get displayTotal {
-    final addOnTotal = kGenericAddOns.where((a) => state.selectedAddOns.contains(a.name)).fold(0.0, (sum, a) => sum + a.price);
-    return (item.itemPrice + addOnTotal) * state.quantity;
+    final addOnTotal = kGenericAddOns
+        .where((a) => state.selectedAddOns.contains(a.name))
+        .fold(0.0, (sum, a) => sum + a.price);
+    final portionExtra = kPortionSizes
+        .firstWhere((p) => p.label == state.selectedPortion, orElse: () => kPortionSizes[0])
+        .extraPrice;
+    return (item.itemPrice + addOnTotal + portionExtra) * state.quantity;
   }
 }

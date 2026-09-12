@@ -3,7 +3,7 @@ import '../entities/menu_item.dart';
 import '../entities/order_line_item.dart';
 
 abstract class RestaurantRepository {
-  Future<ApiResult<List<MenuItem>>> getAllItems();
+  Future<ApiResult<List<MenuItem>>> getAllItems({String? itemName});
 
   Future<ApiResult<List<MenuItem>>> getItemsByCategory(String category);
 

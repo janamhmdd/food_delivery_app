@@ -17,6 +17,12 @@ import 'favorite_heart_button.dart';
 import '../logic/cart_cubit.dart';
 import '../logic/cart_state.dart';
 import 'cart_screen.dart';
+import 'app_drawer.dart';
+import 'best_seller_screen.dart';
+import 'recommendations_screen.dart';
+import 'search_screen.dart';
+import 'item_details_screen.dart';
+import '../domain/pseudo_discount.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -36,6 +42,7 @@ class _HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.headerYellow,
+      endDrawer: const AppDrawer(),
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -85,14 +92,23 @@ class _HomeView extends StatelessWidget {
                                 const SizedBox(height: 20),
                                 _SectionHeader(
                                   title: 'Best Seller',
-                                  onViewAll: () {}, // wire to a full item-list screen if you build one
+                                  onViewAll: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (_) => const BestSellerScreen()),
+                                  ),
                                 ),
                                 const SizedBox(height: 12),
                                 _BestSellerRow(items: state.bestSellers),
                                 const SizedBox(height: 20),
-                                const _PromoBanner(),
+                                _PromoBanner(items: [...state.bestSellers, ...state.recommended]),
                                 const SizedBox(height: 20),
-                                const _SectionTitle('Recommend'),
+                                _SectionHeader(
+                                  title: 'Recommend',
+                                  onViewAll: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (_) => const RecommendationsScreen()),
+                                  ),
+                                ),
                                 const SizedBox(height: 12),
                                 _RecommendRow(items: state.recommended),
                               ],
@@ -128,7 +144,12 @@ class _HeaderSection extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Container(
+                child: GestureDetector(
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SearchScreen()),
+                  ),
+                  child: Container(
                   height: 44,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
@@ -155,6 +176,7 @@ class _HeaderSection extends StatelessWidget {
                       ),
                     ],
                   ),
+                  ),
                 ),
               ),
               const SizedBox(width: 10),
@@ -170,7 +192,7 @@ class _HeaderSection extends StatelessWidget {
               const SizedBox(width: 8),
               _HeaderCircleIcon(
                 icon: Icons.person_outline,
-                onTap: () => Navigator.pushNamed(context, Routes.profile),
+                onTap: () => Scaffold.of(context).openEndDrawer(),
               ),
             ],
           ),
@@ -287,7 +309,7 @@ class _BestSellerRow extends StatelessWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: items.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        separatorBuilder: (_, _) => const SizedBox(width: 12),
         itemBuilder: (context, index) => _FoodCard(item: items[index], width: 100),
       ),
     );
@@ -311,8 +333,8 @@ class _FoodCard extends StatelessWidget {
             CachedNetworkImage(
               imageUrl: item.imageUrl,
               fit: BoxFit.cover,
-              placeholder: (_, __) => Container(color: AppColors.peachCircle),
-              errorWidget: (_, __, ___) => Container(
+              placeholder: (_, _) => Container(color: AppColors.peachCircle),
+              errorWidget: (_, _, _) => Container(
                 color: AppColors.peachCircle,
                 child: Icon(Icons.fastfood, color: AppColors.primary),
               ),
@@ -339,13 +361,28 @@ class _FoodCard extends StatelessWidget {
   }
 }
 
-/// Static marketing content — not from the API, just matching the Figma banner.
+/// Marketing copy is static ("30% OFF"), but tapping it now opens a real
+/// discounted item's details (the first one where hasPseudoDiscount is
+/// true, matching the -30% badge shown there) — otherwise Home's 4/2 item
+/// preview lists, which is the closest thing to "the deal" this banner
+/// advertises.
 class _PromoBanner extends StatelessWidget {
-  const _PromoBanner();
+  final List<MenuItem> items;
+  const _PromoBanner({required this.items});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      onTap: () {
+        if (items.isEmpty) return;
+        final discounted = items.where((i) => hasPseudoDiscount(i.itemId)).toList();
+        final target = discounted.isNotEmpty ? discounted.first : items.first;
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => ItemDetailsScreen(item: target)),
+        );
+      },
+      child: Container(
       height: 120,
       decoration: BoxDecoration(
         color: AppColors.primary,
@@ -386,6 +423,7 @@ class _PromoBanner extends StatelessWidget {
           ),
         ],
       ),
+      ),
     );
   }
 }
@@ -418,8 +456,8 @@ class _RecommendRow extends StatelessWidget {
                           CachedNetworkImage(
                             imageUrl: item.imageUrl,
                             fit: BoxFit.cover,
-                            placeholder: (_, __) => Container(color: AppColors.peachCircle),
-                            errorWidget: (_, __, ___) => Container(
+                            placeholder: (_, _) => Container(color: AppColors.peachCircle),
+                            errorWidget: (_, _, _) => Container(
                               color: AppColors.peachCircle,
                               child: Icon(Icons.fastfood, color: AppColors.primary),
                             ),
