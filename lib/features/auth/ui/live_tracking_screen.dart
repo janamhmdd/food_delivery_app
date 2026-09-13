@@ -23,10 +23,7 @@ class _LiveTrackingScreenState extends State<LiveTrackingScreen> {
   @override
   void initState() {
     super.initState();
-    // Simulated tracking — the API has no real GPS/driver data, so this
-    // animates a progress bar over a few seconds and then marks the order
-    // delivered. Swap this for a real maps + tracking integration later.
-    _timer = Timer.periodic(const Duration(milliseconds: 200), (timer) {
+      _timer = Timer.periodic(const Duration(milliseconds: 200), (timer) {
       setState(() => _progress = (_progress + 0.04).clamp(0.0, 1.0));
       if (_progress >= 1.0) {
         timer.cancel();
@@ -157,7 +154,12 @@ class _MapPlaceholder extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          Icon(Icons.map_outlined, size: 64, color: AppColors.primary.withValues(alpha: 0.3)),
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/map_2.png', 
+              fit: BoxFit.cover,
+            ),
+          ),
           Align(
             alignment: Alignment(-1 + progress * 2, 0),
             child: const Icon(Icons.delivery_dining, color: Colors.black87, size: 32),

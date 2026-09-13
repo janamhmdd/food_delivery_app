@@ -102,7 +102,14 @@ class _MyProfileContentState extends State<_MyProfileContent> {
                                   color: AppColors.authBackground.withValues(alpha: 0.3),
                                   border: Border.all(color: AppColors.primary.withValues(alpha: 0.4), width: 2),
                                 ),
-                                child: const Icon(Icons.person, size: 52, color: AppColors.primary),
+                                child: ClipOval(
+                                  child: Image.asset(
+                                    'assets/images/profile.png', 
+                                    width: 90,
+                                    height: 90,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                               ),
                               Positioned(
                                 bottom: 0,

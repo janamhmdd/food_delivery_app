@@ -7,8 +7,7 @@ import '../../../core/themes/app_text_styles.dart';
 import '../logic/auth_cubit.dart';
 import '../logic/auth_state.dart';
 
-/// The slide-out profile menu (Figma frame 4.1). Wire it up as a Scaffold's
-/// `endDrawer` and open it with `Scaffold.of(context).openEndDrawer()`.
+
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
 
@@ -93,7 +92,14 @@ class _AppDrawerContent extends StatelessWidget {
                           color: Colors.white.withValues(alpha: 0.25),
                           border: Border.all(color: Colors.white, width: 1.5),
                         ),
-                        child: const Icon(Icons.person, color: Colors.white, size: 30),
+                        child: ClipOval(
+                          child: Image.asset(
+                            'assets/images/profile.png',
+                            width: 56,
+                            height: 56,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
                       const SizedBox(width: 14),
                       Expanded(

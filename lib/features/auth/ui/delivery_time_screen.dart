@@ -67,8 +67,12 @@ class DeliveryTimeScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                       child: Container(
                         height: 140,
+                        width: double.infinity,
                         color: AppColors.peachCircle,
-                        child: Icon(Icons.map_outlined, size: 56, color: AppColors.primary.withValues(alpha: 0.4)),
+                        child: Image.asset(
+                          'assets/images/map_1.png', 
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 20),

@@ -6,7 +6,7 @@ const Map<String, List<String>> kItemCategoryKeywords = {
   ],
   'Meal': [
     'sushi', 'pizza', 'chicken', 'curry', 'burger', 'pasta', 'noodle',
-    'rice', 'steak', 'sandwich', 'taco', 'burrito', 'kebab', 'biryani',
+    'steak', 'sandwich', 'taco', 'burrito', 'kebab', 'biryani',
     'wrap', 'lasagna', 'seafood', 'prawn', 'ceviche', 'pad thai',
   ],
   'Vegan': [
@@ -14,12 +14,11 @@ const Map<String, List<String>> kItemCategoryKeywords = {
     'salad', 'vegetable', 'vegan', 'vegetarian', 'tofu', 'lentil',
   ],
   'Dessert': [
-    'macaron', 'cupcake', 'ice cream', 'flan', 'cheesecake', 'chocolate',
-    'cake', 'brownie', 'pastry', 'pie', 'pudding', 'tart', 'cookie',
+     'coconut', 'ice cream', 'flan', 'cheesecake', 'chocolate',
+     'brownie', 'pie', 'pudding', 'tart', 'cookie',
   ],
   'Drinks': [
-    'coffee', 'cocktail', 'juice', 'milkshake', 'wine', 'piña colada',
-    'mojito', 'beer', 'tea', 'smoothie', 'latte', 'lemonade', 'soda',
+    'coffee', 'beer', 'tea'
   ],
 };
 
